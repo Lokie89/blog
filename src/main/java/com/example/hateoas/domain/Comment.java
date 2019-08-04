@@ -8,14 +8,14 @@ import java.util.Date;
 
 @Data
 @Entity
-public class Blog {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private int blogId;
     private int userId;
-    private String title;
     private String content;
     private Date createdDate;
 

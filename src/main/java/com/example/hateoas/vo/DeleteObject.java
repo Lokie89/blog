@@ -1,12 +1,10 @@
-package com.example.hateoas.util;
+package com.example.hateoas.vo;
 
 import lombok.Data;
 
 @Data
-public class CustomLink {
+public class DeleteObject {
     private String href;
-    private String rel;
     private String type;
     private String description;
-
 }

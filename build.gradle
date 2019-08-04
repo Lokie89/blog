@@ -30,7 +30,7 @@ dependencies {
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.2.Final'
     compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.4.2.Final'
     runtime('mysql:mysql-connector-java')
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

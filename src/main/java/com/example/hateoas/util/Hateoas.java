@@ -1,71 +1,68 @@
 package com.example.hateoas.util;
 
+import com.example.hateoas.properties.DescriptionVO;
+import com.example.hateoas.vo.*;
+
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Hateoas {
-    static final String url = "http://localhost:8080";
 
     // list 형태의 값을 불러올 때
     // CRUD에 primaryKey가 필요함
-    public static List<CustomLink> hateoasableList(HttpServletRequest request, long primaryKey) {
-        List<CustomLink> links = new ArrayList<>();
+    public static LinkObject hateoasCRUD(
+            HttpServletRequest request, String[] mandatoryData, String[] optionalData, long primaryKey, boolean isList, DescriptionVO descriptionVO) {
+        LinkObject link = new LinkObject();
         String originalPath = request.getServletPath();
-        String href = url + originalPath + "/" + primaryKey;
-
-        links.add(getCreateLink(href));
-        links.add(getReadLink(href));
-        links.add(getUpdateLink(href));
-        links.add(getDeleteLink(href));
-        return links;
-    }
-
-    // detail 형태의 값을 불러올 때
-    // 이미 주소에 id 값이 있음
-   public static List<CustomLink> hateoasableOne(HttpServletRequest request) {
-        List<CustomLink> links = new ArrayList<>();
-        String originalPath = request.getServletPath();
-        String href = url + originalPath;
-
-        links.add(getCreateLink(href));
-        links.add(getUpdateLink(href));
-        links.add(getDeleteLink(href));
-        return links;
-    }
-
-    private static CustomLink getCreateLink(String href) {
-        CustomLink link = new CustomLink();
-        int endIndex = href.lastIndexOf("/");
-        href = href.substring(0, endIndex);
-        link.setHref(href);
-        link.setType("post");
-        link.setRel("create");
+        String href = originalPath + (isList ? "/" + primaryKey : "");
+        if (descriptionVO == null) {
+            link.setCreate(getCreateLink(href, mandatoryData, optionalData, null));
+            link.setRead(getReadLink(href, null));
+            link.setUpdate(getUpdateLink(href, mandatoryData, optionalData, null));
+            link.setDelete(getDeleteLink(href, null));
+        } else {
+            link.setCreate(getCreateLink(href, mandatoryData, optionalData, descriptionVO.getCreate()));
+            link.setRead(getReadLink(href, descriptionVO.getRead()));
+            link.setUpdate(getUpdateLink(href, mandatoryData, optionalData, descriptionVO.getUpdate()));
+            link.setDelete(getDeleteLink(href, descriptionVO.getDelete()));
+        }
         return link;
     }
 
-    private static CustomLink getReadLink(String href) {
-        CustomLink link = new CustomLink();
-        link.setHref(href);
-        link.setType("get");
-        link.setRel("read");
-        return link;
+
+    private static CreateObject getCreateLink(String href, String[] mandatoryData, String[] optionalData, String description) {
+        CreateObject createObject = new CreateObject();
+        createObject.setHref(href);
+        createObject.setType("post");
+        createObject.setDescription(description);
+        createObject.setMandatoryData(mandatoryData);
+        createObject.setOptionalData(optionalData);
+        return createObject;
     }
 
-    private static CustomLink getUpdateLink(String href) {
-        CustomLink link = new CustomLink();
-        link.setHref(href);
-        link.setType("update");
-        link.setRel("update");
-        return link;
+    private static ReadObject getReadLink(String href, String description) {
+        ReadObject readObject = new ReadObject();
+        readObject.setHref(href);
+        readObject.setDescription(description);
+        readObject.setType("get");
+        return readObject;
     }
 
-    private static CustomLink getDeleteLink(String href) {
-        CustomLink link = new CustomLink();
-        link.setHref(href);
-        link.setType("delete");
-        link.setRel("delete");
-        return link;
+    private static UpdateObject getUpdateLink(String href, String[] mandatoryData, String[] optionalData, String description) {
+        UpdateObject updateObject = new UpdateObject();
+        updateObject.setHref(href);
+        updateObject.setType("update");
+        updateObject.setDescription(description);
+        updateObject.setMandatoryData(mandatoryData);
+        updateObject.setOptionalData(optionalData);
+        return updateObject;
+    }
+
+    private static DeleteObject getDeleteLink(String href, String description) {
+        DeleteObject deleteObject = new DeleteObject();
+        deleteObject.setHref(href);
+        deleteObject.setDescription(description);
+        deleteObject.setType("delete");
+        return deleteObject;
     }
 
 }

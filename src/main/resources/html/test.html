@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+        id : <input type="text" id="id"><br>
+        userId : <input type="text" id="userId"><br>
+        title : <input type="text" id="title"><br>
+        content : <input type="text" id="content"><br>
+    <button onclick="insert()">insert</button>
+    <button onclick="get()">get</button>
+    <button onclick="put()">put</button>
+    <button onclick="del()">delete</button>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    function insert(){
+        var userId = $('#userId').val();
+        var title = $('#title').val();
+        var content = $('#content').val();
+        $.ajax({
+            url : "http://localhost:8080/blog",
+            type: "post",
+            data : {
+                userId : userId,
+                title : title,
+                content: content
+            },
+            statusCode:{
+                200 : function(data){
+                    console.log(data);
+                }
+            }
+        })
+    }
+    function get(){
+        var userId = $('#userId').val();
+        var title = $('#title').val();
+        var content = $('#content').val();
+        $.ajax({
+            url : "http://localhost:8080/blog/"+$('#id').val(),
+            type: "get",
+            data : {
+                userId : userId,
+                title : title,
+                content: content
+            },
+            statusCode:{
+                200 : function(data){
+                    console.log(data);
+                }
+            }
+        })
+    }
+    function put(){
+        var userId = $('#userId').val();
+        var title = $('#title').val();
+        var content = $('#content').val();
+        $.ajax({
+            url : "http://localhost:8080/blog/"+$('#id').val(),
+            type: "put",
+            data : {
+                userId : userId,
+                title : title,
+                content: content
+            },
+            statusCode:{
+                200 : function(data){
+                    console.log(data);
+                }
+            }
+        })
+    }
+    function del(){
+        var userId = $('#userId').val();
+        var title = $('#title').val();
+        var content = $('#content').val();
+        $.ajax({
+            url : "http://localhost:8080/blog/"+$('#id').val(),
+            type: "delete",
+            data : {
+                userId : userId,
+                title : title,
+                content: content
+            },
+            statusCode:{
+                200 : function(data){
+                    console.log(data);
+                }
+            }
+        })
+    }
+</script>
+</html>
