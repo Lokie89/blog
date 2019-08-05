@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "${endpoint.blog}")
 public class BlogController {
@@ -45,7 +44,7 @@ public class BlogController {
             blog.set_links(Hateoas.hateoasCRUD(request, mandatoryData.getBlog(), optionalData.getBlog(), blog.getId(), true, description.getBlog()));
         }
 
-        return new ResponseEntity<>(blogList, HttpStatus.OK);
+        return new ResponseEntity(blogList, HttpStatus.OK);
     }
 
     @PostMapping("")
@@ -57,16 +56,19 @@ public class BlogController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Blog> getBlog(HttpServletRequest request, @PathVariable int id) {
+        System.out.print("$$$$$");
         Blog blog = blogService.selectBlog(id);
         return responseOK(request, blog);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity putBlog(HttpServletRequest request, Blog blog) {
-        if(blogService.selectBlog(blog.getId())==null){
-            return new ResponseEntity(null,HttpStatus.BAD_REQUEST);
+        System.out.print("#####");
+        if (blogService.selectBlog(blog.getId()) == null) {
+            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
         }
         blog.setId(blog.getId());
+        System.out.println(blog);
         blogService.updateBlog(blog);
         return responseOK(request, blog);
     }

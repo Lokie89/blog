@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+
+
+<script>
+    const url = "http://localhost:8080";
+    let endpoints = null;
+    $(function () {
+        $.ajax({
+            url: url + "/",
+            async: false,
+            statusCode: {
+                200: (data) => {
+                    endpoints = data;
+                }
+            }
+        });
+        pageBlogList();
+
+    });
+
+    const pageBlogList = () => {
+
+        $.ajax({
+            url: url + endpoints.blog,
+            async: false,
+            statusCode: {
+                200: (data) => {
+                    // 이 이후에 endpoint는 수정하지않음.
+                    endpoints = data;
+                }
+            }
+        });
+        console.log(endpoints)
+        let html = '<table border="1">';
+        html += '<tr><th>id</th><th>userId</th><th>title</th><th>content</th><th>createdDate</th></tr>';
+        endpoints.forEach((e) => {
+            html += '<tr><td>' + e.id + '</td><td>' + e.userId + '</td><td onclick="location.href=\'' + e._links.read.href + '\'">' + e.title + '</td><td>' + e.content + '</td><td>' + e.createdDate + '</td></tr>'
+        });
+        html += '</table>';
+        html += '<button id="createBlogPage">createBlogPage</button>';
+        $('body').html(html)
+    }
+
+
+    $(document).on('click', '#createBlogPage', () => {
+        pageCreateBlog();
+    });
+
+    const pageCreateBlog = () => {
+        let html = '';
+        html += '<table>'
+        html += '<tr><th>userId</th><td><input type="text" placeholder="userId 입력하세요" id="userId"></td></tr>'
+        html += '<tr><th>title</th><td><input type="text" placeholder="title 입력하세요" id="title"></td></tr>'
+        html += '<tr><th>content</th><td><input type="text" placeholder="content 입력하세요" id="content"></td></tr>'
+        html += '</table>'
+        html += '<button id="createBlog">create</button>';
+        $('body').html(html)
+    };
+
+    $(document).on('click', '#createBlog', () => {
+        createBlog();
+    });
+
+    const createBlog = () => {
+        // 별로안좋은게.. create자체가 사실 객체마다는 필요없는데.. 다잡네..?
+        const create = endpoints[0]._links.create;
+        const mandatoryData = create.mandatoryData;
+        const optionalData = create.optionalData;
+        let jsonData = {};
+        jsonData[mandatoryData[0]] = $('#userId').val();
+        jsonData[optionalData[0]] = $('#title').val();
+        jsonData[optionalData[1]] = $('#content').val();
+        $.ajax({
+            url: create.href,
+            type: create.type,
+            data: jsonData,
+            statusCode: {
+                200: () => {
+                    pageBlogList();
+                    // location.reload()
+                }
+            }
+        });
+    };
+</script>
+</body>
+</html>

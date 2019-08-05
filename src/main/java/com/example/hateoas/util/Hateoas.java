@@ -12,7 +12,8 @@ public class Hateoas {
     public static LinkObject hateoasCRUD(
             HttpServletRequest request, String[] mandatoryData, String[] optionalData, long primaryKey, boolean isList, DescriptionVO descriptionVO) {
         LinkObject link = new LinkObject();
-        String originalPath = request.getServletPath();
+        String originalPath = request.getRequestURL().toString();
+//        String originalPath = request.getServletPath();
         String href = originalPath + (isList ? "/" + primaryKey : "");
         if (descriptionVO == null) {
             link.setCreate(getCreateLink(href, mandatoryData, optionalData, null));
@@ -30,6 +31,9 @@ public class Hateoas {
 
 
     private static CreateObject getCreateLink(String href, String[] mandatoryData, String[] optionalData, String description) {
+        int lastSlush = href.lastIndexOf("/");
+        href = href.substring(0, lastSlush);
+
         CreateObject createObject = new CreateObject();
         createObject.setHref(href);
         createObject.setType("post");
